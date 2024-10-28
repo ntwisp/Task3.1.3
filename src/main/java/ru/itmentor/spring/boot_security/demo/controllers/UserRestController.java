@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.itmentor.spring.boot_security.demo.models.User;
+import ru.itmentor.spring.boot_security.demo.dto.UserDTO;
 import ru.itmentor.spring.boot_security.demo.services.UserService;
 import java.security.Principal;
 
@@ -15,9 +15,9 @@ import java.security.Principal;
 public class UserRestController {
     private final UserService userService;
 
-    @GetMapping("/profile")
-    public ResponseEntity<User> getUserProfile(Principal principal) {
-        User user = userService.findByUsername(principal.getName());
+    @GetMapping
+    public ResponseEntity<UserDTO> getUserProfile(Principal principal) {
+        UserDTO user = userService.findByUsername(principal.getName());
         return ResponseEntity.ok(user);
     }
 }

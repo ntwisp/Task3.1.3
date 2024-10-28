@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.itmentor.spring.boot_security.demo.dto.UserDTO;
 import ru.itmentor.spring.boot_security.demo.models.User;
-import ru.itmentor.spring.boot_security.demo.services.RoleService;
 import ru.itmentor.spring.boot_security.demo.services.UserService;
 import java.util.List;
 
@@ -14,7 +14,6 @@ import java.util.List;
 @RequestMapping("/api/admin")
 public class AdminRestController {
     private final UserService userService;
-    private final RoleService roleService;
 
     @GetMapping("/users")
     public ResponseEntity<List<User>> getAllUsers() {
@@ -29,16 +28,15 @@ public class AdminRestController {
                 new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping("/users")
-    public ResponseEntity<User> createUser(@RequestBody User user, @RequestParam("roleNames") String[] roleNames) {
-        userService.save(user, roleNames);
+    @PostMapping("/users/add")
+    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO user) {
+        userService.save(user);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     @PutMapping("/users/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user, @RequestParam("roleNames") String[] roleNames) {
-        user.setId(id);
-        userService.save(user, roleNames);
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO user) {
+        userService.update(user, id);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 

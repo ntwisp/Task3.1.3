@@ -1,9 +1,11 @@
 package ru.itmentor.spring.boot_security.demo.models;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
+
 import javax.persistence.*;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -16,10 +18,6 @@ public class Role implements GrantedAuthority {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
-
-    @Transient
-    @ManyToMany(mappedBy = "roles")
-    private Set<User> users;
 
     @Override
     public String getAuthority() {
