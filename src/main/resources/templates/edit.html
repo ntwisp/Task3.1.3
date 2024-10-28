@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit User</title>
+    <style>
+    </style>
+</head>
+<body>
+
+<h1>Edit User</h1>
+<div class="form-container">
+    <form th:method="POST" th:action="@{/admin/}" th:object="${user}">
+        <input type="hidden" th:value="${user.getId()}" name="id"/>
+
+        <label for="firstName">First name</label>
+        <input type="text" th:field="*{firstName}" id="firstName"/>
+
+        <label for="lastName">Last name</label>
+        <input type="text" th:field="*{lastName}" id="lastName"/>
+
+        <label for="age">Age</label>
+        <input type="number" th:field="*{age}" id="age"/>
+
+        <label for="email">E-mail</label>
+        <input type="text" th:field="*{email}" id="email"/>
+
+        <label>Roles:</label>
+        <div class="checkbox-group">
+            <input type="checkbox" name="roleNames" th:each="role: ${roles}" th:text="${role}" th:value="${role.getName()}">
+        </div>
+
+        <label for="username">Username</label>
+        <input type="text" th:field="*{username}" id="username"/>
+
+        <label for="password">Password</label>
+        <input type="password" th:field="*{password}" id="password"/>
+
+        <input type="submit" value="Update">
+    </form>
+</div>
+
+<form th:action="@{/logout}" method="post" style="text-align: center;">
+    <input type="submit" value="Logout">
+</form>
+
+</body>
+</html>

@@ -1,0 +1,45 @@
+-- logpass admin / durak999
+-- logpass user / user
+
+
+DROP TABLE users_roles;
+DROP TABLE roles;
+DROP TABLE users;
+
+CREATE TABLE IF NOT EXISTS users(
+                                    id         BIGSERIAL PRIMARY KEY,
+                                    age        SMALLINT NOT NULL,
+                                    email      VARCHAR(255),
+                                    first_name VARCHAR(255),
+                                    last_name  VARCHAR(255),
+                                    password   VARCHAR(255),
+                                    username   VARCHAR(255)
+);
+
+CREATE TABLE IF NOT EXISTS roles(
+                                    id   BIGSERIAL PRIMARY KEY,
+                                    name VARCHAR(255)
+);
+
+CREATE TABLE IF NOT EXISTS users_roles(
+                                          user_id BIGSERIAL REFERENCES users(id),
+                                          role_id BIGSERIAL REFERENCES roles(id)
+);
+
+INSERT INTO users (age, email, first_name, last_name, password, username)
+VALUES (30, 'admin@lol.com', 'admin', 'admin', '$2a$12$nErODZPnzWzl/UzD3x5xrO43SPW67n7N3DdpmVxqWgXlejSgMR75u',
+        'admin');
+INSERT INTO users (age, email, first_name, last_name, password, username)
+VALUES (29, 'user@lol.com', 'user', 'user', '$2a$12$x223yf0l0/2gr8B8HaVv.eb48OKK3e8WkxV0isGFYwWAr9SAMOmoq', 'user');
+
+INSERT INTO roles (name)
+VALUES ('ROLE_ADMIN');
+INSERT INTO roles (name)
+VALUES ('ROLE_USER');
+
+INSERT INTO users_roles (user_id, role_id)
+VALUES (1, 1);
+INSERT INTO users_roles (user_id, role_id)
+VALUES (1, 2);
+INSERT INTO users_roles (user_id, role_id)
+VALUES (2, 2);
