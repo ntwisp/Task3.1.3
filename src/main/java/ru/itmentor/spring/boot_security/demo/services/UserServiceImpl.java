@@ -6,56 +6,63 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.itmentor.spring.boot_security.demo.dao.RoleDAO;
-import ru.itmentor.spring.boot_security.demo.dao.UserDAO;
-import ru.itmentor.spring.boot_security.demo.models.Role;
+import ru.itmentor.spring.boot_security.demo.dto.UserDTO;
+import ru.itmentor.spring.boot_security.demo.mappers.UserMapper;
 import ru.itmentor.spring.boot_security.demo.models.User;
-import java.util.HashSet;
+import ru.itmentor.spring.boot_security.demo.repository.UserRepository;
+
 import java.util.List;
-import java.util.Set;
+
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final UserDAO userDao;
-    private final RoleDAO roleDao;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Override
     public List<User> findAll() {
-        return userDao.findAll();
+        return userRepository.findAll();
     }
 
     @Override
-    public User findByUsername(String username) {
-        return userDao.findUserByUsername(username);
+    public UserDTO findByUsername(String username) {
+        User user = userRepository.findByUsername(username);
+        return userMapper.toDto(user);
     }
 
     @Override
-    public User findById(long id) {
-        return userDao.findById(id);
+    public User findById(Long id) {
+        return userRepository.findById(id).orElse(null);
     }
 
     @Override
     @Transactional
-    public void save(User user, String[] roleNames) {
-        Set<Role> roles = new HashSet<>();
-        for (String roleName : roleNames) {
-            roles.add(roleDao.findRoleByName(roleName));
-        }
-        user.setRoles(roles);
+    public void save(UserDTO userdto) {
+        User user = userMapper.toEntity(userdto);
         user.setPassword(new BCryptPasswordEncoder(12).encode(user.getPassword()));
-        userDao.save(user);
+        userRepository.save(user);
     }
 
     @Override
     @Transactional
-    public void delete(long id) {
-        userDao.deleteById(id);
+    public UserDTO update(UserDTO userdto, Long id) {
+        User user = userMapper.toEntity(userdto);
+        user.setId(id);
+        user.setPassword(new BCryptPasswordEncoder(12).encode(user.getPassword()));
+        userRepository.save(user);
+        return userdto;
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+        userRepository.deleteById(id);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userDao.findUserByUsername(username);
+        User user = userRepository.findByUsernameAndFetchLazyRelationEagerly(username);
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }
